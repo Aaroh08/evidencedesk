@@ -16,8 +16,8 @@ SQLite WAL persists data without a separate database service. Synchronous querie
 
 Run from the repository root. Use npm ci to match the lockfile. Rebuild after changing browser code. If a port is occupied, stop the prior project instance or change config.json and restart. Service-worker assets are cached for offline fallback; a normal online reload fetches current assets. Changing ports creates a different browser storage origin.
 
-Keep data/ outside source control. Stop the process before a simple full-directory backup, and test restoring into a separate copy of the application. Do not copy a live SQLite file alone while WAL is active. The test suite verifies reopening stored data but does not replace an operational backup exercise.
+Keep data/ outside source control. Use `npm run backup` for a consistent online SQLite backup. The automated restore drill verifies workspace and source-document contents while the source WAL database remains open. See [Deployment and recovery](DEPLOYMENT.md) for isolated restore instructions and container operation. Do not copy a live SQLite file alone while WAL is active.
 
 ## Production work still required
 
-Named users and membership roles; explicit deployment configuration; OS-level resource quotas for workers; database migration/version strategy; retention and deletion UI; structured redacted monitoring; SLOs; accessibility audit; browser automation in CI; independently designed adversarial tests; multi-device network testing; and capacity measurement. These are documented gaps rather than completed features.
+Named users and membership roles; OS-level resource quotas for workers; database migration/version strategy; retention and deletion UI; structured redacted monitoring; SLOs; accessibility audit; browser automation in CI; independently designed adversarial tests; multi-device network testing; and capacity measurement. These are documented gaps rather than completed features.

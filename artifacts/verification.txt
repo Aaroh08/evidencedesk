@@ -10,31 +10,39 @@
 > evidencedesk@1.0.0 test
 > node --test tests/*.test.mjs
 
-(node:8412) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:26636) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
-✔ workspace validates input and requires invite capability (251.0479ms)
-✔ cross-origin mutations are denied (41.4897ms)
-✔ concurrent offline text and tasks converge without losing independent edits (78.0288ms)
-✔ sync is idempotent, malformed updates rejected, history records real checkpoints (78.1645ms)
-✔ rotating an invite revokes the prior capability (49.9365ms)
-(node:26464) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+✔ workspace validates input and requires invite capability (162.647ms)
+✔ cross-origin mutations are denied (21.4831ms)
+✔ concurrent offline text and tasks converge without losing independent edits (52.1745ms)
+✔ sync is idempotent, malformed updates rejected, history records real checkpoints (43.4519ms)
+✔ rotating an invite revokes the prior capability (32.1567ms)
+(node:18796) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
-✔ real PDF text extraction retains page attribution through search (2122.3545ms)
-(node:18004) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+✔ invalid JSON shapes return client errors instead of server errors (170.4882ms)
+✔ unknown hosts are rejected even without Origin (27.7005ms)
+✔ workspace export is authenticated and never includes access secrets (36.4666ms)
+✔ deployment rejects invalid ports and requires an explicit external origin (4.7319ms)
+✔ external TLS origin and workspace capacity are enforced (21.3402ms)
+✔ online WAL backup restores source data and refuses overwrites (51.0837ms)
+(node:29384) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
-✔ SQLite state survives closing and reopening the application (62.1621ms)
-✔ ten independently edited clients merge and duplicate retries do not erase work (461.1166ms)
-(node:26240) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+✔ real PDF text extraction retains page attribution through search (974.843ms)
+(node:24984) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
-✔ citations refer to exact source text and page (3.1185ms)
-✔ unrelated and stopword-only questions abstain (0.6146ms)
-✔ source versioning, duplicate detection, isolation and latest-version retrieval (282.8156ms)
-✔ invalid PDFs and oversized source text fail clearly (1785.617ms)
-ℹ tests 12
+✔ SQLite state survives closing and reopening the application (46.0569ms)
+✔ ten independently edited clients merge and duplicate retries do not erase work (325.4523ms)
+(node:17824) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ citations refer to exact source text and page (3.8989ms)
+✔ unrelated and stopword-only questions abstain (0.5521ms)
+✔ source versioning, duplicate detection, isolation and latest-version retrieval (235.195ms)
+✔ invalid PDFs and oversized source text fail clearly (754.2512ms)
+ℹ tests 18
 ℹ suites 0
-ℹ pass 12
+ℹ pass 18
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 3703.0783
+ℹ duration_ms 1611.8512

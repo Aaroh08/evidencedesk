@@ -1,13 +1,26 @@
 name: Verify
 on: [push, pull_request]
+permissions:
+  contents: read
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 24.13.1
           cache: npm
       - run: npm ci
       - run: npm run check
+      - name: Build and start constrained container
+        run: docker compose up --build -d --wait
+      - name: Exercise HTTP workflow and persistent volume across recreation
+        run: node scripts/container-smoke.mjs
+      - name: Container diagnostics
+        if: failure()
+        run: docker compose logs
+      - name: Clean up test deployment
+        if: always()
+        run: docker compose down -v

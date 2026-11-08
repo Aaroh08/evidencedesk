@@ -6,9 +6,21 @@ import { resolve } from "node:path";
 import * as Y from "yjs";
 const hash = (x) => createHash("sha256").update(x).digest("hex");
 export function createApp({
-  file = "data/app.sqlite",
+  file = process.env.DATA_FILE || "data/app.sqlite",
+  publicOrigin = process.env.PUBLIC_ORIGIN,
+  maxRooms = Number(process.env.MAX_ROOMS || 50),
   config = JSON.parse(readFileSync("config.json")),
 } = {}) {
+  if (!Number.isInteger(maxRooms) || maxRooms < 1 || maxRooms > 10000)
+    throw Error("MAX_ROOMS must be an integer between 1 and 10000");
+  if (publicOrigin) {
+    const url = new URL(publicOrigin);
+    if (
+      !["http:", "https:"].includes(url.protocol) ||
+      url.origin !== publicOrigin
+    )
+      throw Error("PUBLIC_ORIGIN must be an HTTP(S) origin without a path");
+  }
   if (file !== ":memory:") mkdirSync(resolve(file, ".."), { recursive: true });
   const db = new DatabaseSync(file);
   db.exec(
@@ -29,10 +41,15 @@ export function createApp({
       "Content-Security-Policy":
         "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",
     });
+    const expected = publicOrigin || `${req.protocol}://${req.get("host")}`;
+    const hostname = req.hostname;
     if (
-      req.headers.origin &&
-      req.headers.origin !== `${req.protocol}://${req.get("host")}`
+      publicOrigin
+        ? req.get("host") !== new URL(publicOrigin).host
+        : !["127.0.0.1", "localhost", "[::1]"].includes(hostname)
     )
+      return res.status(403).json({ error: "Host not allowed" });
+    if (req.headers.origin && req.headers.origin !== expected)
       return res.status(403).json({ error: "Cross-origin request denied" });
     if (req.path.startsWith("/api/")) {
       const key = req.socket.remoteAddress;
@@ -51,6 +68,14 @@ export function createApp({
     next();
   });
   app.use(express.json({ limit: "6mb" }));
+  app.use("/api", (req, res, next) => {
+    if (
+      ["POST", "PUT", "PATCH"].includes(req.method) &&
+      (!req.body || typeof req.body !== "object" || Array.isArray(req.body))
+    )
+      return res.status(400).json({ error: "Provide a JSON object" });
+    next();
+  });
   app.get("/api/config", (_, res) => res.json(config));
   app.get("/api/health", (_, res) => {
     db.prepare("SELECT 1").get();
@@ -62,6 +87,10 @@ export function createApp({
       return res
         .status(400)
         .json({ error: "Name must contain 1–80 characters" });
+    if (db.prepare("SELECT count(*) n FROM rooms").get().n >= maxRooms)
+      return res
+        .status(507)
+        .json({ error: "Workspace capacity reached; contact the operator" });
     const id = randomUUID(),
       token = randomBytes(32).toString("hex");
     db.prepare("INSERT INTO rooms(id,name,secret,created) VALUES(?,?,?,?)").run(
@@ -104,12 +133,10 @@ export function createApp({
       Y.applyUpdate(doc, new Uint8Array(Buffer.from(encoded, "base64")));
       const state = Buffer.from(Y.encodeStateAsUpdate(doc));
       if (state.length > 1000000)
-        return res
-          .status(413)
-          .json({
-            error:
-              "Workspace storage limit reached; export and create another workspace",
-          });
+        return res.status(413).json({
+          error:
+            "Workspace storage limit reached; export and create another workspace",
+        });
       if (req.room.state && Buffer.from(req.room.state).equals(state))
         return res.json({
           revision: req.room.revision,
@@ -160,18 +187,32 @@ export function createApp({
     );
     res.json({ token });
   });
+  app.get("/api/rooms/:id/export", (req, res) => {
+    res.json({
+      format: 1,
+      name: req.room.name,
+      exported: new Date().toISOString(),
+      state: req.room.state
+        ? Buffer.from(req.room.state).toString("base64")
+        : null,
+      documents: db
+        .prepare(
+          "SELECT id,title,version,sha,pages,created FROM documents WHERE room=?",
+        )
+        .all(req.room.id)
+        .map((d) => ({ ...d, pages: JSON.parse(d.pages) })),
+    });
+  });
   return { app, db, config };
 }
 export function finish({ app }, publicDir = "public") {
   app.use(express.static(publicDir, { etag: true }));
   app.use((err, req, res, next) => {
-    res
-      .status(err.status || 500)
-      .json({
-        error:
-          err.status === 413
-            ? "Request too large"
-            : "Request could not be processed",
-      });
+    res.status(err.status || 500).json({
+      error:
+        err.status === 413
+          ? "Request too large"
+          : "Request could not be processed",
+    });
   });
 }

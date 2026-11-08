@@ -19,9 +19,13 @@ npm test
 npm start
 ```
 
-Open **http://127.0.0.1:5073**. On Windows you can also run `start.ps1` after `npm ci`. Keep the terminal open. Ctrl+C stops the application. Database files are created in ignored `data/`. Stop the server before copying the entire data directory for a local backup; protect both database backups and invite links.
+Open **http://127.0.0.1:5073**. On Windows you can also run `start.ps1` after `npm ci`. Keep the terminal open. Ctrl+C stops the application. Database files are created in ignored `data/`. Run `npm run backup` for an online SQLite snapshot; protect both database backups and invite links.
 
 Create a research collection. Load the fictional sample and add it to the collection. Ask how long backups are retained, inspect the cited page, then ask about an unrelated topic. Add an edited source with the same title and compare current versus historical versions.
+
+## Container setup and recovery
+
+`docker compose up --build -d --wait` starts the app with a persistent data volume and resource limits. The port remains bound to this computer. See [deployment and recovery](docs/DEPLOYMENT.md) for configuration, backup and restore instructions. GitHub Actions exercises container recreation and verifies that saved work survives.
 
 ## Architecture
 
@@ -39,7 +43,7 @@ The shared document syncs every 1.5 seconds. Updates merge server-side with Yjs 
 
 ## Verification
 
-`npm run check` rebuilds the browser bundle and runs the Node test suite. Tests use real HTTP servers, SQLite, authentication middleware and CRDT updates. See [recorded test output](artifacts/verification.txt). GitHub Actions repeats the build and tests on Linux/Node 24. Tests cover access isolation, cross-origin rejection, malformed sync updates, idempotent retries, invite rotation, database restart recovery and ten independently edited clients.
+`npm run check` rebuilds the browser bundle and runs the Node test suite. Tests use real HTTP servers, SQLite, authentication middleware and CRDT updates. See [recorded test output](artifacts/verification.txt). The current suite has 18 automated tests. GitHub Actions repeats the build and tests on Linux/Node 24.13.1, then builds the deployment container and exercises persistence across container recreation. Tests cover access isolation, cross-origin rejection, malformed sync updates, idempotent retries, invite rotation, database restart recovery and ten independently edited clients.
 
 See [verification notes](docs/VERIFICATION.md) for completed browser checks and their limits. A passing test suite is evidence for the cases exercised, not a promise of zero defects.
 
@@ -53,7 +57,7 @@ No analytics or remote AI calls are implemented. Code, notes and document conten
 
 Retrieval is lexical and extractive, not semantic or generative. It can miss synonyms and may return passages that mention a topic without answering the question. Query term coverage is a heuristic, not calibrated confidence. The tool does not determine truth, reconcile contradictions or guarantee answer support. OCR, web crawling, embeddings and external AI APIs are not implemented. Research search requires the server; only the notebook supports offline editing.
 
-This is a tested portfolio application, **not a certified production service**. Before an internet deployment, add named-user authentication and authorization, TLS, deployment-specific origin/host controls, stronger per-user quotas, backup/restore drills, security review, monitoring, privacy/retention controls and realistic load testing. Node's built-in SQLite API is experimental in the tested runtime. No availability SLA, penetration-test certification or production-scale performance claim is made.
+This is a tested portfolio application, **not a certified production service**. Before an internet deployment, add named-user authentication and authorization, TLS, stronger per-user quotas, operational recovery drills, security review, monitoring, privacy/retention controls and realistic load testing. Node's built-in SQLite API is experimental in the tested runtime. No availability SLA, penetration-test certification or production-scale performance claim is made.
 
 ## Repository guide
 

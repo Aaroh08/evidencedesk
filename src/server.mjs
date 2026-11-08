@@ -1,3 +1,4 @@
+import { listen } from "./runtime.mjs";
 import { createApp, finish } from "./core.mjs";
 import { createHash, randomUUID } from "node:crypto";
 import { fork } from "node:child_process";
@@ -77,6 +78,21 @@ export function application(options) {
         if (pages.length > 80)
           return res.status(400).json({ error: "Maximum 80 pages" });
       }
+      if (
+        db.prepare("SELECT secret FROM rooms WHERE id=?").get(req.room.id)
+          ?.secret !== req.room.secret
+      )
+        return res
+          .status(404)
+          .json({ error: "Workspace not found or invite is invalid" });
+      if (
+        db
+          .prepare("SELECT count(*) n FROM documents WHERE room=?")
+          .get(req.room.id).n >= 40
+      )
+        return res
+          .status(413)
+          .json({ error: "Collection limit is 40 document versions" });
       const sha = createHash("sha256")
         .update(JSON.stringify(pages))
         .digest("hex");
@@ -112,6 +128,13 @@ export function application(options) {
     res.json({ ...d, pages: JSON.parse(d.pages) });
   });
   app.post("/api/rooms/:id/search", (req, res) => {
+    if (
+      req.body.includeHistory !== undefined &&
+      typeof req.body.includeHistory !== "boolean"
+    )
+      return res
+        .status(400)
+        .json({ error: "includeHistory must be a boolean" });
     const q = req.body.question;
     if (typeof q !== "string" || q.trim().length < 3 || q.length > 500)
       return res
@@ -140,7 +163,5 @@ export function application(options) {
 }
 if (process.argv[1]?.endsWith("server.mjs")) {
   const s = application();
-  s.app.listen(s.config.port, "127.0.0.1", () =>
-    console.log("EvidenceDesk http://127.0.0.1:" + s.config.port),
-  );
+  listen(s);
 }

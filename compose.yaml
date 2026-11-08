@@ -1,0 +1,22 @@
+services:
+  app:
+    build: .
+    init: true
+    environment:
+      PUBLIC_ORIGIN: http://127.0.0.1:5073
+      MAX_ROOMS: 50
+    ports:
+      - "127.0.0.1:5073:8080"
+    volumes:
+      - app-data:/app/data
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 512m
+    cpus: 1.0
+    pids_limit: 64
+    restart: unless-stopped
+volumes:
+  app-data:

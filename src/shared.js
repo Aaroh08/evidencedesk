@@ -15,6 +15,7 @@ export function notice(s) {
 }
 export async function api(path, data) {
   const r = await fetch("/api" + path, {
+    signal: AbortSignal.timeout(path.endsWith("/documents") ? 20000 : 8000),
     method: data === undefined ? "GET" : "POST",
     headers: {
       "Content-Type": "application/json",
@@ -204,17 +205,39 @@ export async function boot(render) {
         room: session.id,
         key: session.token,
       }).toString();
+      // Seed the new capability-specific cache with all local edits before reload.
+      const previous = provider;
+      provider = new IndexeddbPersistence(
+        session.id + ":" + session.token.slice(0, 12),
+        doc,
+      );
+      await provider.whenSynced;
+      await previous.destroy();
       notice("Invite replaced. Copy and share the new link.");
     } catch (e) {
       notice(e.message);
     }
   };
-  $("#export").onclick = () => {
+  $("#export").onclick = async () => {
     if (!doc) return;
+    let archive;
+    try {
+      archive = await api("/rooms/" + session.id + "/export");
+    } catch {
+      if (
+        !confirm(
+          "Server unavailable. Export local notes and edits only? Source documents will not be included.",
+        )
+      )
+        return;
+      archive = { incomplete: true, documents: [] };
+    }
     const blob = new Blob(
       [
         JSON.stringify(
           {
+            ...archive,
+            state: b64(Y.encodeStateAsUpdate(doc)),
             name: session.name,
             exported: new Date().toISOString(),
             data: doc.toJSON(),
