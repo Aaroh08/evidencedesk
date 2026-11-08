@@ -1,0 +1,24 @@
+{
+  "name": "evidencedesk",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.13.1"
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "node src/server.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "check": "npm run build && npm test"
+  },
+  "dependencies": {
+    "express": "5.3.0",
+    "yjs": "13.6.33",
+    "y-indexeddb": "9.0.12",
+    "pdfjs-dist": "6.5.438"
+  },
+  "devDependencies": {
+    "esbuild": "0.28.2"
+  }
+}

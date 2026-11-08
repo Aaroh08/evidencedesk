@@ -1,0 +1,7 @@
+{
+  "slug": "evidencedesk",
+  "name": "EvidenceDesk",
+  "port": 5073,
+  "title": "Every answer needs evidence.",
+  "description": "Explore document collections with inspectable passages and precise source references."
+}

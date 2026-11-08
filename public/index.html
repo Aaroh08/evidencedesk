@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#111620" />
+    <title>EvidenceDesk</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="manifest" href="/manifest.json" />
+    <script type="module" src="/bundle.js"></script>
+  </head>
+  <body style="--accent: #f1c68d">
+    <aside>
+      <a class="brand" href="/">◈ EvidenceDesk</a>
+      <div class="eyebrow">YOUR WORKSPACE</div>
+      <button id="home" class="nav">Overview</button
+      ><button id="invite" class="nav">Copy invite link</button
+      ><button id="rotate" class="nav">Replace invite key</button
+      ><button id="export" class="nav">Export workspace</button>
+      <div class="aside-bottom">
+        <span id="network">Connecting</span>
+        <p>Private by invite.<br />Built for thoughtful work.</p>
+      </div>
+    </aside>
+    <main>
+      <header>
+        <span class="eyebrow">EVIDENCEDESK / WORKSPACE</span
+        ><span id="sync" role="status">Ready</span>
+      </header>
+      <div id="notice" role="alert"></div>
+      <section id="landing">
+        <p class="kicker">A little less friction. A lot more focus.</p>
+        <h1>Every answer needs evidence.</h1>
+        <p class="lead">
+          Explore document collections with inspectable passages and precise
+          source references.
+        </p>
+        <form id="create">
+          <label
+            >Workspace name<input
+              id="name"
+              maxlength="80"
+              placeholder="e.g. Friday study group"
+              required /></label
+          ><button class="primary">Create workspace →</button>
+        </form>
+        <div class="feature-grid">
+          <article>
+            <span>01 / COLLABORATE</span>
+            <h3>A place for the whole team</h3>
+            <p>
+              Share a private invite. Keep your work organized in one persistent
+              workspace.
+            </p>
+          </article>
+          <article>
+            <span>02 / STAY IN CONTROL</span>
+            <h3>Evidence over assumptions</h3>
+            <p>
+              Visible sync status, clear error messages, and exports you can
+              keep.
+            </p>
+          </article>
+          <article>
+            <span>03 / PICK UP AGAIN</span>
+            <h3>Built around real work</h3>
+            <p>
+              Return to your workspace without losing the context that matters.
+            </p>
+          </article>
+        </div>
+        <h2>Recent workspaces</h2>
+        <div id="recent"></div>
+      </section>
+      <section id="workspace" hidden>
+        <div class="workspace-title">
+          <div>
+            <p class="kicker">YOUR SHARED SPACE</p>
+            <h1 id="workspace-name"></h1>
+          </div>
+          <span class="pill" id="mode"></span>
+        </div>
+        <div id="content"></div>
+      </section>
+      <footer>
+        Invite links grant access. Share only with your collaborators. Local
+        demo · no analytics.
+      </footer>
+    </main>
+  </body>
+</html>

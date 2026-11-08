@@ -1,0 +1,135 @@
+{
+  "description": "Authored ten-question diagnostic; not an independent benchmark. Last question intentionally uses synonyms to expose lexical retrieval limitations.",
+  "correct": 9,
+  "total": 10,
+  "rows": [
+    {
+      "question": "How long are backups retained?",
+      "expected": {
+        "id": "retention",
+        "page": 1
+      },
+      "observed": {
+        "id": "retention",
+        "page": 1
+      },
+      "status": "evidence_found",
+      "correct": true,
+      "latency_ms": 1.4605999999999995
+    },
+    {
+      "question": "What do recovery requests require?",
+      "expected": {
+        "id": "retention",
+        "page": 1
+      },
+      "observed": {
+        "id": "retention",
+        "page": 1
+      },
+      "status": "evidence_found",
+      "correct": true,
+      "latency_ms": 0.10719999999999885
+    },
+    {
+      "question": "When must lost devices be reported?",
+      "expected": {
+        "id": "retention",
+        "page": 2
+      },
+      "observed": {
+        "id": "retention",
+        "page": 2
+      },
+      "status": "evidence_found",
+      "correct": true,
+      "latency_ms": 0.1839999999999975
+    },
+    {
+      "question": "When are access reviews?",
+      "expected": {
+        "id": "retention",
+        "page": 2
+      },
+      "observed": {
+        "id": "retention",
+        "page": 2
+      },
+      "status": "evidence_found",
+      "correct": true,
+      "latency_ms": 0.10239999999999583
+    },
+    {
+      "question": "When does workshop registration close?",
+      "expected": {
+        "id": "events",
+        "page": 1
+      },
+      "observed": {
+        "id": "events",
+        "page": 1
+      },
+      "status": "evidence_found",
+      "correct": true,
+      "latency_ms": 0.03580000000000183
+    },
+    {
+      "question": "Who approves projector reservations?",
+      "expected": {
+        "id": "events",
+        "page": 2
+      },
+      "observed": {
+        "id": "events",
+        "page": 2
+      },
+      "status": "evidence_found",
+      "correct": true,
+      "latency_ms": 0.02790000000000248
+    },
+    {
+      "question": "quantum entanglement",
+      "expected": {
+        "id": null,
+        "page": null
+      },
+      "observed": null,
+      "status": "insufficient_evidence",
+      "correct": true,
+      "latency_ms": 0.028400000000004866
+    },
+    {
+      "question": "scholarship eligibility",
+      "expected": {
+        "id": null,
+        "page": null
+      },
+      "observed": null,
+      "status": "insufficient_evidence",
+      "correct": true,
+      "latency_ms": 0.026899999999997704
+    },
+    {
+      "question": "What is the?",
+      "expected": {
+        "id": null,
+        "page": null
+      },
+      "observed": null,
+      "status": "insufficient_evidence",
+      "correct": true,
+      "latency_ms": 0.008499999999997954
+    },
+    {
+      "question": "How many days do we keep copies?",
+      "expected": {
+        "id": "retention",
+        "page": 1
+      },
+      "observed": null,
+      "status": "insufficient_evidence",
+      "correct": false,
+      "latency_ms": 0.045000000000001705
+    }
+  ]
+}
